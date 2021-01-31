@@ -1,0 +1,16 @@
+[
+  {
+    "name": "offertoro",
+    "displayName": "Offerwall #1",
+    "apiKey": "",
+    "robuxPerDollar": 75,
+    "cache": true
+  },
+  {
+    "name": "adgate",
+    "displayName": "Offerwall #2",
+    "offerwall_id": "n6qUsA",
+    "robuxPerDollar": 75,
+    "cache": true
+  }
+]

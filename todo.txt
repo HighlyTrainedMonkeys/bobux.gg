@@ -1,0 +1,15 @@
+websocket - use needed first
+implement webhooks into finished APIS
+
+today 
+
+test roblox payouts
+firebase admin auth
+offerwall modules
+
+
+https://www.ayetstudios.com/offers/get/2848?apiKey=e7d38946b7cac057dfc63c675653f432
+
+https://wall.adgaterewards.com/apiv1/vc/n6qUsA/users/${uid}/offers?ip=${ip}
+https://wall.adgaterewards.com/apiv1/vc/n6qUsA/users/${uid}
+
