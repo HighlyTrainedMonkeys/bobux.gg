@@ -150,3 +150,18 @@ module.exports.updateGroups = async (groups) => {
   }
 };
 
+module.exports.getCachedUser = async (username) => {
+  try {
+    return JSON.parse(await connection.get(`${username}-cached`));
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports.setCachedUser = async (user) => {
+  try {
+    await connection.set(`${user.username}-cached`, JSON.stringify(user));
+  } catch (error) {
+    throw error;
+  }
+};
