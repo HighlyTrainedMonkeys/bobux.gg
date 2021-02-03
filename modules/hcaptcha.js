@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const needle = require("needle");
 
+//TODO: check and make sure this works. i feel like it will break
 module.exports.verifyCaptcha = async (token, ip) => {
   try {
     let result = await needle(
