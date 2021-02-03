@@ -132,7 +132,7 @@ module.exports.getIdFromUserOLD = (username) => {
   });
 };
 
-//TODO: finish this and test it
+//TODO: needs to be finished
 module.exports.groupPayout = async (cookie, gid, amount, username) => {
   try {
     let proxy = await getProxy();
