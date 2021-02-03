@@ -40,6 +40,10 @@ fs.readdir("./routes", (error, files) => {
 
 redis.setConnection(new ioredis());
 
+redis.setProxies(
+  fs.readFileSync("proxies.txt").toString().replace(/\r/g, "").split(/\n/g)
+);
+
 mongoose.connect(
   "mongodb://127.0.0.1:27017/bobuxgg",
   {

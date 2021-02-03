@@ -1,15 +1,16 @@
 const request = require("request");
 const needle = require("needle");
-
-//TODO: possibly proxify these?
+const redis = require("../modules/redis");
 
 module.exports.getGroupIcon = async (gid) => {
   try {
+    let proxy = await getProxy();
     let result = await needle(
       "get",
       `https://thumbnails.roblox.com/v1/groups/icons?groupIds=${gid}&size=150x150&format=Png`,
       {
         json: true,
+        proxy: `http://${proxy}`,
       }
     );
 
@@ -59,10 +60,14 @@ module.exports.getGroupIconOLD = (gid) => {
 
 module.exports.getIdFromUser = async (username) => {
   try {
+    let proxy = await getProxy();
     let result = await needle(
       "get",
       `https://api.roblox.com/users/get-by-username?username=${username}`,
-      { json: true }
+      {
+        json: true,
+        proxy: `http://${proxy}`,
+      }
     );
 
     if (result.statusCode !== 200)
@@ -130,7 +135,11 @@ module.exports.getIdFromUserOLD = (username) => {
 //TODO: finish this and test it
 module.exports.groupPayout = async (cookie, gid, amount, username) => {
   try {
-    let result = await needle(
+    let proxy = await getProxy();
+
+    let id = await this.getIdFromUser(username);
+
+    let getToken = await needle(
       "post",
       `https://groups.roblox.com/v1/groups/${gid}/payouts`,
       {
@@ -138,10 +147,45 @@ module.exports.groupPayout = async (cookie, gid, amount, username) => {
           Cookie: `.ROBLOSECURITY=${cookie}`,
         },
         json: true,
+        proxy: `http://${proxy}`,
       }
     );
 
-    let xsrf = result.headers["x-csrf-token"];
+    let xsrf = getToken.headers["x-csrf-token"];
+
+    let result = await needle(
+      "post",
+      `https://groups.roblox.com/v1/groups/${gid}/payouts`,
+      {
+        PayoutType: "FixedAmount",
+        Recipients: [
+          { recipientId: id, recipientType: "User", amount: amount },
+        ],
+      },
+      {
+        headers: {
+          Cookie: `.ROBLOSECURITY=${cookie}`,
+          "X-CSRF-TOKEN": xsrf,
+        },
+        json: true,
+        proxy: `http://${proxy}`,
+      }
+    );
+    if (result.body.errors) {
+      if (result.body.errors[0].code == 27)
+        throw {
+          retry: false,
+          message:
+            "Failed to payout, user not found in group, check the username and try again.",
+          RBX_ERR_CODE: "USER_NOT_FOUND",
+        };
+      else
+        throw {
+          retry: false,
+          message: "Failed to payout, if problem persists contact an admin",
+          RBX_ERR_CODE: "UNKNOWN_ERROR",
+        };
+    }
   } catch (error) {
     throw error;
   }
@@ -149,6 +193,7 @@ module.exports.groupPayout = async (cookie, gid, amount, username) => {
 
 module.exports.getCookieInfo = async (cookie) => {
   try {
+    let proxy = await getProxy();
     let result = await needle(
       "get",
       "https://www.roblox.com/mobileapi/userinfo",
@@ -157,6 +202,7 @@ module.exports.getCookieInfo = async (cookie) => {
         headers: {
           Cookie: `.ROBLOSECURITY=${cookie}`,
         },
+        proxy: `http://${proxy}`,
       }
     );
 
@@ -175,6 +221,7 @@ module.exports.getCookieInfo = async (cookie) => {
 
 module.exports.getGroupBalance = async (gid, cookie) => {
   try {
+    let proxy = await getProxy();
     let result = await needle(
       "get",
       `https://economy.roblox.com/v1/groups/${gid}/currency`,
@@ -183,6 +230,7 @@ module.exports.getGroupBalance = async (gid, cookie) => {
           Cookie: `.ROBLOSECURITY=${cookie}`,
         },
         json: true,
+        proxy: `http://${proxy}`,
       }
     );
 
@@ -201,10 +249,14 @@ module.exports.getGroupBalance = async (gid, cookie) => {
 
 module.exports.verifyMembership = async (rid, gid) => {
   try {
+    let proxy = await getProxy();
     let result = await needle(
       "get",
       `https://api.roblox.com/users/${rid}/groups`,
-      { json: true }
+      {
+        json: true,
+        proxy: `http://${proxy}`,
+      }
     );
 
     if (result.body.length < 1)
@@ -233,11 +285,13 @@ module.exports.verifyMembership = async (rid, gid) => {
 
 module.exports.verifyOwnership = async (rid, gid) => {
   try {
+    let proxy = await getProxy();
     let result = await needle(
       "get",
       `https://groups.roblox.com/v1/groups/${gid}`,
       {
         json: true,
+        proxy: `http://${proxy}`,
       }
     );
 
@@ -266,4 +320,9 @@ module.exports.verifyOwnership = async (rid, gid) => {
   } catch (error) {
     throw error;
   }
+};
+
+const getProxy = async () => {
+  let proxies = await redis.getProxies();
+  return proxies[Math.floor(Math.random() * proxies.length)];
 };
