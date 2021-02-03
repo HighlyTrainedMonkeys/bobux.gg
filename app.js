@@ -51,8 +51,8 @@ mongoose.connect(
   async () => {
     console.log("Connected to MongoDB!");
 
-    app.listen(3000, () => {
-      console.log("HTTP server listening on port 3000!");
+    app.listen(5000, () => {
+      console.log("HTTP server listening on port 5000!");
     });
 
     init.init();

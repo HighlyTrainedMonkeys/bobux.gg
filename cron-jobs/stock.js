@@ -8,6 +8,8 @@ const main = async () => {
     let groups = await redis.getGroups();
     let validatedGroups = [];
 
+    if (!groups) return await redis.setStock(0);
+    
     const enumerate = async () => {
       try {
         let total = validatedGroups.reduce((p, c) => {

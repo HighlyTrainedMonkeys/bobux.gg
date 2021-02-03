@@ -12,6 +12,15 @@ const schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  users: {
+    type: Array,
+    required: true,
+    default: [] //array of RID's that have redeemed this code
+  },
+  expiry: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Code", schema);

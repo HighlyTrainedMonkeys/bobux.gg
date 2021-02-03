@@ -100,7 +100,11 @@ router.post("/api/v1/promocode/redeem", uauth, async (req, res) => {
   try {
     const { error } = Joi.object({
       token: Joi.string().required().label("Captcha token"),
-      code: Joi.string().alphanum().allow([" ", "_", "-"]).required().label("Promocode")
+      code: Joi.string()
+        .alphanum()
+        .allow([" ", "_", "-"])
+        .required()
+        .label("Promocode"),
     }).validate(req.body);
 
     if (error)
@@ -110,8 +114,40 @@ router.post("/api/v1/promocode/redeem", uauth, async (req, res) => {
       });
 
     await captcha.verifyCaptcha(req.body.token, req.ipAddress);
-    
-    //TODO: implement logic for promocode redemption
+
+    let code = await Code.findOne({ code: req.body.code });
+
+    if (!code)
+      return res.status(400).json({
+        status: "error",
+        error: "Invalid promocode!",
+      });
+
+    if (code.users.includes(req.user.rid))
+      return res.status(400).json({
+        status: "error",
+        error: "You cannot redeem a promocode more than once!",
+      });
+
+    if (code.expiry >= Date.now()) {
+      await code.remove();
+      return res.status(400).json({
+        status: "error",
+        error: "Invalid promocode!",
+      });
+    }
+
+    await Code.findOneAndUpdate(
+      { code: req.body.code },
+      { $push: { users: req.user.rid } }
+    );
+
+    await User.findOneAndUpdate(
+      { rid: req.user.rid },
+      {
+        $inc: { balance: code.amount },
+      }
+    );
 
     res.status(200).json({
       status: "success",
