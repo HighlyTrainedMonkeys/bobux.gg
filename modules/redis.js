@@ -165,3 +165,19 @@ module.exports.setCachedUser = async (user) => {
     throw error;
   }
 };
+
+module.exports.setProxies = async (proxies) => {
+  try {
+    await connection.set("proxies", JSON.stringify(proxies));
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports.getProxies = async () => {
+  try {
+    return JSON.parse(await connection.get("proxies"));
+  } catch (error) {
+    throw error;
+  }
+};
