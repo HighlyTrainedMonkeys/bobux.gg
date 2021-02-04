@@ -132,7 +132,6 @@ module.exports.getIdFromUserOLD = (username) => {
   });
 };
 
-//TODO: needs to be finished
 module.exports.groupPayout = async (cookie, gid, amount, username) => {
   try {
     let proxy = await getProxy();
@@ -142,6 +141,7 @@ module.exports.groupPayout = async (cookie, gid, amount, username) => {
     let getToken = await needle(
       "post",
       `https://groups.roblox.com/v1/groups/${gid}/payouts`,
+      {},
       {
         headers: {
           Cookie: `.ROBLOSECURITY=${cookie}`,
@@ -171,7 +171,17 @@ module.exports.groupPayout = async (cookie, gid, amount, username) => {
         proxy: `http://${proxy}`,
       }
     );
+
+    if (result.statusCode !== 200)
+      throw {
+        retry: true,
+        message:
+          "There was an error communicating with the Roblox server! Please try again!",
+        RBX_ERR_CODE: "NETWORK_ERROR",
+      };
+
     if (result.body.errors) {
+      //Other codes may be possible, only know of 27 where error due to user not being in the group
       if (result.body.errors[0].code == 27)
         throw {
           retry: false,
@@ -186,6 +196,8 @@ module.exports.groupPayout = async (cookie, gid, amount, username) => {
           RBX_ERR_CODE: "UNKNOWN_ERROR",
         };
     }
+
+    return "Success";
   } catch (error) {
     throw error;
   }
@@ -317,6 +329,31 @@ module.exports.verifyOwnership = async (rid, gid) => {
       };
 
     return result.body;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports.getUserThumbnail = async (rid) => {
+  try {
+    let proxy = await getProxy();
+    let result = await needle(
+      "get",
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${rid}&size=150x150&format=Png&isCircular=false`,
+      {
+        json: true,
+        proxy: `http://${proxy}`,
+      }
+    );
+
+    if (
+      result.statusCode !== 200 ||
+      result.body.data.length < 1 ||
+      body.data[0].state !== "Completed"
+    )
+      return "https://tr.rbxcdn.com/c3ee609e91804ee2f15c6375355a381a/150/150/AvatarHeadshot/Png";
+
+    return body.data[0].imageUrl;
   } catch (error) {
     throw error;
   }

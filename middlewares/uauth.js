@@ -5,7 +5,6 @@ const redis = require("../modules/redis");
 const User = require("../models/User");
 const Joi = require("@hapi/joi");
 
-
 module.exports = async (req, res, next) => {
   const { error } = Joi.string()
     .alphanum()
@@ -28,6 +27,8 @@ module.exports = async (req, res, next) => {
     }
 
     let rid = await roblox.getIdFromUser(req.headers.username);
+    let image = await roblox.getUserThumbnail(rid);
+
     let user = await User.findOne({
       username: { $regex: new RegExp(req.headers.username, "i") },
     });
@@ -37,8 +38,7 @@ module.exports = async (req, res, next) => {
       user = new User({
         username: req.headers.username.toLowerCase(),
         rid: rid,
-        image:
-          "https://tr.rbxcdn.com/c3ee609e91804ee2f15c6375355a381a/150/150/AvatarHeadshot/Png",
+        image: image,
       });
 
       await user.save();
