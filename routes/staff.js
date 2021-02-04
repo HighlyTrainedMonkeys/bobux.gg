@@ -207,7 +207,13 @@ router.post("/api/v1/reseller/stats", adminAuth, async (req, res) => {
         groups,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      error: "Internal error!",
+    });
+  }
 });
 
 router.post("/api/v1/reseller/group/add", adminAuth, async (req, res) => {
