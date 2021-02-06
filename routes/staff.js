@@ -21,11 +21,12 @@ const Payout = require("../models/Payout");
 //total stock on site, user count, total paid
 router.get("/api/v1/staff/stats", adminAuth, async (req, res) => {
   try {
-    if (!req.user.permissions.includes("ADMIN"))
-      return res.status(403).json({
-        status: "error",
-        error: "Unauthorized!",
-      });
+    //disabled this because it doesnt matter if resellers see these details
+    // if (!req.user.permissions.includes("ADMIN"))
+    //   return res.status(403).json({
+    //     status: "error",
+    //     error: "Unauthorized!",
+    //   });
 
     let users = await User.countDocuments({});
     let stock = await redis.getStock();
