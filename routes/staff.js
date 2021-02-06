@@ -63,8 +63,9 @@ router.get("/api/v1/staff/stats", adminAuth, async (req, res) => {
           users,
           stock,
           paid: stats.paid,
-          saleHistory
+          saleHistory,
         },
+        groups,
       },
     });
   } catch (error) {
