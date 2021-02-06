@@ -191,6 +191,7 @@ router.post("/api/v1/reseller/group/add", adminAuth, async (req, res) => {
       gid,
       cookie: req.body.cookie,
       sid: req.user.uid,
+      stockerName: req.user.displayName,
     });
 
     await group.save();

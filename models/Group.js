@@ -21,6 +21,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  stockerName: {
+    type: String,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("Group", schema);
