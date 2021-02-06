@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const Joi = require("@hapi/joi");
-const uuid = require("uuid").v4;
 const admin = require("firebase-admin");
 const moment = require("moment");
 const Discord = require("discord.js");
