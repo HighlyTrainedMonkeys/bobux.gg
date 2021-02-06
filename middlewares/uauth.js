@@ -33,6 +33,13 @@ module.exports = async (req, res, next) => {
       username: { $regex: new RegExp(req.headers.username, "i") },
     });
 
+    if (user.banned) {
+      return res.status(403).json({
+        status: "error",
+        error: "User banned!",
+      });
+    }
+
     if (!user) {
       //TODO: get user avatars and store them
       user = new User({
