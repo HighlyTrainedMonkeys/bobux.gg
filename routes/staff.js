@@ -32,6 +32,30 @@ router.get("/api/v1/staff/stats", adminAuth, async (req, res) => {
     let stock = await redis.getStock();
     let stats = await Stats.findOne({});
 
+    let all = await redis.getGroups();
+    let groups = req.user.permissions.includes("ADMIN")
+      ? all
+      : all.filter((g) => g.sid == req.user.uid);
+
+    let currentTime = moment();
+    let start = currentTime.startOf("day").subtract(7, "d").toDate().getTime();
+
+    let payouts = await Payout.find({
+      timestamp: { $gte: start },
+      sid: req.user.uid,
+    });
+
+    let saleHistory = payouts.reduce((days, payout) => {
+      let startOfDay = moment(payout.timestamp).startOf("day");
+      let day = `${startOfDay.format("MMMM")} ${startOfDay.date()}`;
+
+      if (!days[day]) days[day] = { total: 0, count: 0 };
+
+      days[day].total += payout.amount;
+      days[day].count++;
+      return days;
+    }, {});
+
     res.status(200).json({
       status: "success",
       result: {
@@ -39,6 +63,7 @@ router.get("/api/v1/staff/stats", adminAuth, async (req, res) => {
           users,
           stock,
           paid: stats.paid,
+          saleHistory
         },
       },
     });
@@ -141,81 +166,6 @@ router.post(
     }
   }
 );
-
-//make sure proper permissions are setup
-router.get("/api/v1/staff/groups/list", adminAuth, async (req, res) => {
-  try {
-    if (!req.user.permissions.includes("ADMIN"))
-      return res.status(403).json({
-        status: "error",
-        error: "Unauthorized!",
-      });
-
-    let groups = await Group.find({});
-
-    res.status(200).json({
-      status: "success",
-      result: {
-        groups,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "error",
-      error: "Internal error!",
-    });
-  }
-});
-
-//send a list of groups added by the currently authenticated user
-//send payout statistics from the past 7 days
-//maybe a payment history?
-router.post("/api/v1/reseller/stats", adminAuth, async (req, res) => {
-  try {
-    if (!req.user.permissions.includes("RESELLER"))
-      return res.status(403).json({
-        status: "error",
-        error: "Unauthorized!",
-      });
-
-    let all = await redis.getGroups();
-    let groups = all.filter((g) => g.sid == req.user.uid);
-
-    let currentTime = moment();
-    let start = currentTime.startOf("day").subtract(7, "d").toDate().getTime();
-
-    let payouts = await Payout.find({
-      timestamp: { $gte: start },
-      sid: req.user.uid,
-    });
-
-    let stats = payouts.reduce((days, payout) => {
-      let startOfDay = moment(payout.timestamp).startOf("day");
-      let day = `${startOfDay.format("MMMM")} ${startOfDay.date()}`;
-
-      if (!days[day]) days[day] = { total: 0, count: 0 };
-
-      days[day].total += payout.amount;
-      days[day].count++;
-      return days;
-    }, {});
-
-    res.status(200).json({
-      status: "success",
-      result: {
-        stats,
-        groups,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "error",
-      error: "Internal error!",
-    });
-  }
-});
 
 router.post("/api/v1/reseller/group/add", adminAuth, async (req, res) => {
   try {
