@@ -15,7 +15,7 @@ router.get("/api/v1/user/info", uauth, (req, res) => {
   });
 });
 
-router.get("/api/v1/user/link", async (req, res) => {
+router.post("/api/v1/user/link", async (req, res) => {
   try {
     const { error } = Joi.object({
       username: Joi.string()
