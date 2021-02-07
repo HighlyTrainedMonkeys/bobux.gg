@@ -476,7 +476,7 @@ router.post("/api/v1/staff/user/balance/set", adminAuth, async (req, res) => {
       result: {
         message: "Balance updated successfully!",
       },
-    }); //OwO
+    }); 
   } catch (error) {
     console.error(error);
     res.status(500).json({
