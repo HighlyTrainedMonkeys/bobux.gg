@@ -3,14 +3,22 @@
     "name": "offertoro",
     "displayName": "Offerwall #1",
     "apiKey": "",
-    "robuxPerDollar": 75,
+    "robuxPerDollar": 40,
     "cache": true
   },
   {
     "name": "adgate",
     "displayName": "Offerwall #2",
     "offerwall_id": "n6qUsA",
-    "robuxPerDollar": 75,
+    "robuxPerDollar": 40,
+    "cache": true
+  },
+  {
+    "name": "ayetstudios",
+    "displayName": "Offerwall #3",
+    "offerwall_id": "2848",
+    "apiKey": "e7d38946b7cac057dfc63c675653f432",
+    "robuxPerDollar": 40,
     "cache": true
   }
 ]

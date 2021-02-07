@@ -19,7 +19,32 @@ module.exports.getOffers = async (config, uid, ip) => {
 //cache results if config says to do so
 const getOffertoro = async (config, uid, ip) => {};
 
-const getAyet = async (config, uid, ip) => {};
+const getAyet = async (config, uid, ip) => {
+  try {
+    let result = await needle(
+      "get",
+      `https://www.ayetstudios.com/offers/get/${config.offerwall_id}?apiKey=${config.apiKey}`,
+      { json: true }
+    );
+
+    if (result.statusCode !== 200) throw "Error loading offerwall!";
+
+    let formatted = result.body.offers.map((o) => {
+      return {
+        name: o.name,
+        description: o.conversion_instructions_short,
+        usd: o.payout_usd,
+        id: o.id,
+        url: o.tracking_link,
+        icon: o.icon,
+      };
+    });
+
+    return formatted;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const getAdgate = async (config, uid, ip) => {
   try {
