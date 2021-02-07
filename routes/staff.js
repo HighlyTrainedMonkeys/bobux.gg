@@ -262,8 +262,10 @@ router.post("/api/v1/reseller/group/remove", adminAuth, async (req, res) => {
 router.post("/api/v1/reseller/payout/request", adminAuth, async (req, res) => {
   try {
     const { error } = Joi.object({
-      method: Joi.valid(["paypal", "bitcoin"]).required().label("Payout method"),
-      address: Joi.string().required().label("Payment address")
+      method: Joi.valid(["paypal", "bitcoin"])
+        .required()
+        .label("Payout method"),
+      address: Joi.string().required().label("Payment address"),
     }).validate(req.body);
 
     if (error)
@@ -460,7 +462,7 @@ router.post("/api/v1/staff/user/balance/set", adminAuth, async (req, res) => {
       {
         username: { $regex: new RegExp(req.body.username, "i") },
       },
-      { balance: goal.reward }
+      { balance: req.body.amount }
     );
 
     if (!user)
@@ -472,7 +474,7 @@ router.post("/api/v1/staff/user/balance/set", adminAuth, async (req, res) => {
     res.status(200).json({
       status: "success",
       result: {
-        user,
+        message: "Balance updated successfully!",
       },
     });
   } catch (error) {
