@@ -437,4 +437,51 @@ router.post("/api/v1/staff/user/info", adminAuth, async (req, res) => {
 //give/remove permissions such as RESELLER or ADMIN
 router.post("/api/v1/staff/permissions/update", (req, res) => {});
 
+router.post("/api/v1/staff/user/balance/set", adminAuth, async (req, res) => {
+  try {
+    if (!req.user.permissions.includes("ADMIN"))
+      return res.status(403).json({
+        status: "error",
+        error: "Unauthorized!",
+      });
+
+    const { error } = Joi.object({
+      username: Joi.string().alphanum().allow(["_"]).label("Roblox Username"),
+      amount: Joi.number().integer().label("Amount"),
+    }).validate(req.body);
+
+    if (error)
+      return res.status(400).json({
+        status: "error",
+        error: error.details[0].message,
+      });
+
+    let user = await User.findOneAndUpdate(
+      {
+        username: { $regex: new RegExp(req.body.username, "i") },
+      },
+      { balance: goal.reward }
+    );
+
+    if (!user)
+      return res.status(400).json({
+        status: "error",
+        error: "User not found",
+      });
+
+    res.status(200).json({
+      status: "success",
+      result: {
+        user,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      error: "Internal error!",
+    });
+  }
+});
+
 module.exports = router;
