@@ -4,7 +4,9 @@ API for a rewards site - https://bobux.gg
 # Requirements
 
 MongoDB v4+
+
 Redis
+
 Node.JS v12+ (build tools may be required for some modules)
 
 # .env file
