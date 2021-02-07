@@ -16,6 +16,8 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
+app.disable("x-powered-by");
+
 app.use(express.json());
 app.use(helmet());
 
