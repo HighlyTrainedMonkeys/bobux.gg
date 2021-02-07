@@ -262,7 +262,8 @@ router.post("/api/v1/reseller/group/remove", adminAuth, async (req, res) => {
 router.post("/api/v1/reseller/payout/request", adminAuth, async (req, res) => {
   try {
     const { error } = Joi.object({
-      method: Joi.valid(["paypal", "bitcoin"]).required(),
+      method: Joi.valid(["paypal", "bitcoin"]).required().label("Payout method"),
+      address: Joi.string().required().label("Payment address")
     }).validate(req.body);
 
     if (error)
