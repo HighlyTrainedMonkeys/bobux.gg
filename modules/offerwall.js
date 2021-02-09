@@ -1,5 +1,6 @@
 const needle = require("needle");
 const redis = require("./redis");
+const ms = require("ms");
 
 module.exports.getOffers = async (config, uid, ip) => {
   try {
@@ -42,7 +43,7 @@ const getAyet = async (config, uid, ip) => {
     });
 
     if(config.cache) {
-      await redis.setOfferwallCache(config.name, formatted);
+      await redis.setOfferwallCache(config.name, {expiry: Date.now() + ms("15m"), offers: formatted});
     }
 
     return formatted;
@@ -74,7 +75,7 @@ const getAdgate = async (config, uid, ip) => {
     });
 
     if(config.cache) {
-      await redis.setOfferwallCache(config.name, formatted);
+      await redis.setOfferwallCache(config.name, {expiry: Date.now() + ms("15m"), offers: formatted});
     }
 
     return formatted;
