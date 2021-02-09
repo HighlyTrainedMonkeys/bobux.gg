@@ -9,7 +9,7 @@ const Joi = require("@hapi/joi");
 module.exports = async (req, res, next) => {
   const { error } = Joi.string()
     .alphanum()
-    .allow([" ", "_"])
+    .allow(" ", "_")
     .required()
     .validate(req.headers.username);
 
@@ -19,7 +19,6 @@ module.exports = async (req, res, next) => {
       error: "Invalid username! Make sure your username is spelled correctly!",
     });
 
-    console.log("Getting cached user");
   try {
     let cached = await redis.getCachedUser(req.headers.username);
     console.log(cached);
@@ -28,7 +27,7 @@ module.exports = async (req, res, next) => {
       req.user = cached;
       return next();
     }
-    console.log("User not cached. Checking db...")
+    
     let user = await User.findOne({
       username: { $regex: new RegExp(req.headers.username, "i") },
     });
@@ -43,12 +42,8 @@ module.exports = async (req, res, next) => {
     }
 
     if (!user) {
-      console.log("User doesnt exist. Getting user ID...");
       let rid = await roblox.getIdFromUser(req.headers.username);
-      console.log(rid);
-      console.log("getting image")
       let image = await roblox.getUserThumbnail(rid);
-      console.log(image);
       
       user = new User({
         username: req.headers.username.toLowerCase(),
