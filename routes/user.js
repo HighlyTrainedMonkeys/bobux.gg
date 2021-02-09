@@ -35,7 +35,7 @@ router.post("/api/v1/user/link", async (req, res) => {
           "Invalid username! Make sure you spelled it correctly and try again!",
       });
 
-    let uid = await roblox.getIdFromUser(req.body.username);
+    let rid = await roblox.getIdFromUser(req.body.username);
     let user = await User.findOne({
       username: { $regex: new RegExp(req.body.username, "i") },
     });
@@ -43,7 +43,7 @@ router.post("/api/v1/user/link", async (req, res) => {
     if (!user) {
       user = new User({
         username: req.body.username.toLowerCase(),
-        uid: uid,
+        rid,
         referrer: req.body.referrer || "NONE",
       });
 
