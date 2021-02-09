@@ -28,7 +28,8 @@ router.post("/api/v1/user/link", async (req, res) => {
       referrer: Joi.string().alphanum().allow(" ", "_").label("Referrer"),
     });
 
-    Sentry.captureMessage(error);
+    console.log(error)
+    Sentry.captureMessage("cccc");
     if (error)
       return res.status(400).json({
         status: "error",
