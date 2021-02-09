@@ -30,7 +30,7 @@ module.exports.getGroups = async () => {
 
 module.exports.getOfferwallCache = async (name) => {
   try {
-    return await connection.get(`${name}-offers`);
+    return JSON.parse(await connection.get(`${name}-offers`));
   } catch (error) {
     throw error;
   }
