@@ -27,9 +27,6 @@ module.exports = async (req, res, next) => {
       return next();
     }
 
-    let rid = await roblox.getIdFromUser(req.headers.username);
-    let image = await roblox.getUserThumbnail(rid);
-
     let user = await User.findOne({
       username: { $regex: new RegExp(req.headers.username, "i") },
     });
@@ -42,7 +39,9 @@ module.exports = async (req, res, next) => {
     }
 
     if (!user) {
-      //TODO: get user avatars and store them
+      let rid = await roblox.getIdFromUser(req.headers.username);
+      let image = await roblox.getUserThumbnail(rid);
+      
       user = new User({
         username: req.headers.username.toLowerCase(),
         rid: rid,
