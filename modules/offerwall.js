@@ -33,7 +33,8 @@ const getAyet = async (config, uid, ip) => {
       return {
         name: o.name,
         description: o.conversion_instructions_short,
-        usd: o.payout_usd,
+        //usd: o.payout_usd,
+        reward: o.payout_usd * process.env.ROBUX_PER_DOLLAR,
         id: o.id,
         url: o.tracking_link,
         icon: o.icon,
@@ -64,7 +65,8 @@ const getAdgate = async (config, uid, ip) => {
       return {
         name: o.anchor,
         description: o.description,
-        usd: o.points,
+        //usd: o.points,
+        reward: o.points * process.env.ROBUX_PER_DOLLAR,
         id: o.id,
         url: o.click_url,
         icon: o.icon_url,
@@ -74,7 +76,7 @@ const getAdgate = async (config, uid, ip) => {
     if(config.cache) {
       await redis.setOfferwallCache(config.name, formatted);
     }
-    
+
     return formatted;
   } catch (error) {
     throw error;
