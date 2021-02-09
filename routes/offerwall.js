@@ -8,6 +8,7 @@ const Tracing = require("@sentry/tracing");
 const offerwalls = require("../offerwalls.json");
 const redis = require("../modules/redis");
 const offerwall = require("../modules/offerwall");
+const auth = require("../middlewares/uauth");
 
 router.get("/api/v1/offerwalls", (req, res) => {
   res.status(200).json({
@@ -16,7 +17,7 @@ router.get("/api/v1/offerwalls", (req, res) => {
   });
 });
 
-router.get("/api/v1/offerwall/:name", async (req, res) => {
+router.get("/api/v1/offerwall/:name", auth, async (req, res) => {
   let ip = req.headers["cf-connecting-ip"] || req.ip;
 
   let { error } = Joi.string().ip().required().validate(ip);
@@ -26,7 +27,7 @@ router.get("/api/v1/offerwall/:name", async (req, res) => {
       status: "error",
       error: "Invalid IP header supplied!",
     });
-    
+
   try {
     let offerwallConfig = offerwalls.find(
       (o) => o.name.toLowerCase() == req.params.name.toLowerCase()
