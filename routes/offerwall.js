@@ -31,6 +31,9 @@ router.get("/api/v1/offerwall/:name", async (req, res) => {
 
     if (offerwallConfig.cache) {
       result = await redis.getOfferwallCache(offerwallConfig.name);
+      if(!result) {
+        result = offerwall.getOffers(offerwallConfig);
+      }
     } else {
       result = offerwall.getOffers(offerwallConfig);
     }
