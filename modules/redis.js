@@ -36,6 +36,15 @@ module.exports.getOfferwallCache = async (name) => {
   }
 };
 
+module.exports.setOfferwallCache = async (name, offers) => {
+  try {
+    return await connection.set(`${name}-offers`, JSON.stringify(offers));
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 module.exports.setOffers = async (name, offers) => {
   try {
     return await connection.set(`${name}-offers`, JSON.stringify(offers));

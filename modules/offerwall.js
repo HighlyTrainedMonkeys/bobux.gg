@@ -40,6 +40,10 @@ const getAyet = async (config, uid, ip) => {
       };
     });
 
+    if(config.cache) {
+      await redis.setOfferwallCache(config.name, formatted);
+    }
+
     return formatted;
   } catch (error) {
     throw error;
@@ -67,6 +71,10 @@ const getAdgate = async (config, uid, ip) => {
       };
     });
 
+    if(config.cache) {
+      await redis.setOfferwallCache(config.name, formatted);
+    }
+    
     return formatted;
   } catch (error) {
     throw error;
