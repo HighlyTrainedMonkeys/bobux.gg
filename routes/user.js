@@ -7,9 +7,9 @@ const uauth = require("../middlewares/uauth");
 const roblox = require("../modules/roblox");
 const User = require("../models/User");
 
-router.get("/api/v1/user/info", (req, res) => {
-  delete req.user._id;
-  delete req.user.__v;
+router.get("/api/v1/user/info", uauth, (req, res) => {
+  // delete req.user._id;
+  // delete req.user.__v;
 
   res.status(200).json({
     status: "success",
