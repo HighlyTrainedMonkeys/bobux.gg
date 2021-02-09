@@ -44,10 +44,10 @@ router.get("/api/v1/offerwall/:name", auth, async (req, res) => {
     if (offerwallConfig.cache) {
       result = await redis.getOfferwallCache(offerwallConfig.name);
       if (!result) {
-        result = offerwall.getOffers(offerwallConfig, req.user.rid, ip);
+        result = await offerwall.getOffers(offerwallConfig, req.user.rid, ip);
       }
     } else {
-      result = offerwall.getOffers(offerwallConfig, req.user.rid, ip);
+      result = await offerwall.getOffers(offerwallConfig, req.user.rid, ip);
     }
 
     res.status(200).json({
