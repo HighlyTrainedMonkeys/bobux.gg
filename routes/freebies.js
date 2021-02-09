@@ -106,7 +106,7 @@ router.post("/api/v1/promocode/redeem", uauth, async (req, res) => {
       token: Joi.string().required().label("Captcha token"),
       code: Joi.string()
         .alphanum()
-        .allow([" ", "_", "-"])
+        .allow(" ", "_", "-")
         .required()
         .label("Promocode"),
     }).validate(req.body);

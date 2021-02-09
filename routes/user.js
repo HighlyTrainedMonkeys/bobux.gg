@@ -22,10 +22,10 @@ router.post("/api/v1/user/link", async (req, res) => {
     const { error } = Joi.object({
       username: Joi.string()
         .alphanum()
-        .allow([" ", "_"])
+        .allow(" ", "_")
         .required()
         .label("Username"),
-      referrer: Joi.string().alphanum().allow([" ", "_"]).label("Referrer"),
+      referrer: Joi.string().alphanum().allow(" ", "_").label("Referrer"),
     });
 
     if (error)

@@ -31,7 +31,7 @@ router.all(
       if (
         Joi.string()
           .alphanum()
-          .allow([" ", "-", "_"])
+          .allow(" ", "-", "_")
           .validate(req.params.offerwall).error
       )
         return res.status(400).json({
@@ -40,7 +40,7 @@ router.all(
         });
 
       if (
-        Joi.string().alphanum().allow([" ", "-", "_"]).validate(req.params.name)
+        Joi.string().alphanum().allow(" ", "-", "_").validate(req.params.name)
           .error
       )
         return res.status(400).json({
@@ -49,7 +49,7 @@ router.all(
         });
 
       if (
-        Joi.string().alphanum().allow([" ", "-", "_"]).validate(req.params.oid)
+        Joi.string().alphanum().allow(" ", "-", "_").validate(req.params.oid)
           .error
       )
         return res.status(400).json({

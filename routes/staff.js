@@ -269,7 +269,7 @@ router.post("/api/v1/reseller/group/remove", adminAuth, async (req, res) => {
 router.post("/api/v1/reseller/payout/request", adminAuth, async (req, res) => {
   try {
     const { error } = Joi.object({
-      method: Joi.valid(["paypal", "bitcoin"])
+      method: Joi.valid("paypal", "bitcoin")
         .required()
         .label("Payout method"),
       address: Joi.string().required().label("Payment address"),
@@ -368,7 +368,7 @@ router.post("/api/v1/staff/user/ban/toggle", adminAuth, async (req, res) => {
       });
 
     const { error } = Joi.object({
-      username: Joi.string().alphanum().allow(["_"]).label("Roblox Username"),
+      username: Joi.string().alphanum().allow("_").label("Roblox Username"),
     }).validate(req.body);
 
     if (error)
@@ -412,7 +412,7 @@ router.post("/api/v1/staff/user/info", adminAuth, async (req, res) => {
       });
 
     const { error } = Joi.object({
-      username: Joi.string().alphanum().allow(["_"]).label("Roblox Username"),
+      username: Joi.string().alphanum().allow("_").label("Roblox Username"),
     }).validate(req.body);
 
     if (error)
@@ -459,7 +459,7 @@ router.post("/api/v1/staff/user/balance/set", adminAuth, async (req, res) => {
       });
 
     const { error } = Joi.object({
-      username: Joi.string().alphanum().allow(["_"]).label("Roblox Username"),
+      username: Joi.string().alphanum().allow("_").label("Roblox Username"),
       amount: Joi.number().integer().label("Amount"),
     }).validate(req.body);
 

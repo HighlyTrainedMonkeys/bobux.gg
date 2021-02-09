@@ -20,7 +20,7 @@ router.post("/api/v1/transactions/init", uauth, async (req, res) => {
     const { error } = Joi.object({
       username: Joi.string()
         .alphanum()
-        .allow([" ", "_"])
+        .allow(" ", "_")
         .required()
         .label("Username"),
       amount: Joi.number().integer().min(1).required().label("Amount"),
