@@ -1,4 +1,5 @@
 //offerwall routes for dynamically loading content
+const Joi = require("@hapi/joi");
 const router = require("express").Router();
 const _ = require("lodash");
 const Sentry = require("@sentry/node");
@@ -16,6 +17,16 @@ router.get("/api/v1/offerwalls", (req, res) => {
 });
 
 router.get("/api/v1/offerwall/:name", async (req, res) => {
+  let ip = req.headers["cf-connecting-ip"] || req.ip;
+
+  let { error } = Joi.string().ip().required().validate(ip);
+
+  if (error)
+    return res.status(400).json({
+      status: "error",
+      error: "Invalid IP header supplied!",
+    });
+    
   try {
     let offerwallConfig = offerwalls.find(
       (o) => o.name.toLowerCase() == req.params.name.toLowerCase()
@@ -31,11 +42,11 @@ router.get("/api/v1/offerwall/:name", async (req, res) => {
 
     if (offerwallConfig.cache) {
       result = await redis.getOfferwallCache(offerwallConfig.name);
-      if(!result) {
-        result = offerwall.getOffers(offerwallConfig);
+      if (!result) {
+        result = offerwall.getOffers(offerwallConfig, req.user.rid, ip);
       }
     } else {
-      result = offerwall.getOffers(offerwallConfig);
+      result = offerwall.getOffers(offerwallConfig, req.user.rid, ip);
     }
 
     res.status(200).json({ status: "success", result });
