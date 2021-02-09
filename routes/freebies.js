@@ -3,6 +3,8 @@ const router = require("express").Router();
 const moment = require("moment");
 const parser = require("cron-parser");
 const Joi = require("@hapi/joi");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const ClaimedReward = require("../models/ClaimedReward");
 const Completed = require("../models/Completed");
@@ -53,6 +55,7 @@ router.get("/api/v1/giveaway/meta", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -83,6 +86,7 @@ router.post("/api/v1/giveaway/enter", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     if (error.CAPTCHA_CODE)
       return res.status(500).json({
         status: "error",
@@ -157,6 +161,7 @@ router.post("/api/v1/promocode/redeem", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     if (error.CAPTCHA_CODE)
       return res.status(500).json({
         status: "error",
@@ -230,6 +235,7 @@ router.get("/api/v1/reward/meta", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error! Please try again!",
@@ -349,6 +355,7 @@ router.post("/api/v1/reward/claim", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error! Please try again!",

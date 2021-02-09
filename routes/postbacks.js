@@ -3,6 +3,8 @@ require("dotenv").config();
 
 const router = require("express").Router();
 const Joi = require("@hapi/joi");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const whitelist = require("../middlewares/whitelist");
 
@@ -96,6 +98,7 @@ router.all(
       });
     } catch (error) {
       console.error(error);
+    Sentry.captureException(error);
       res.status(500).json({
         status: "error",
         error: "Internal error!",

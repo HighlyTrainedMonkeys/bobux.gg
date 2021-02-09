@@ -1,5 +1,6 @@
 //check if the user has linked their account
-
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 const roblox = require("../modules/roblox");
 const redis = require("../modules/redis");
 const User = require("../models/User");
@@ -56,6 +57,7 @@ module.exports = async (req, res, next) => {
     req.user = user;
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     if (error.code || error.code == "INVALID_USERNAME")
       return res.status(400).json({
         status: "error",

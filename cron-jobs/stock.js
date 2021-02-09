@@ -1,3 +1,5 @@
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 const cron = require("node-cron");
 const redis = require("../modules/redis");
 const roblox = require("../modules/roblox");
@@ -19,6 +21,7 @@ const main = async () => {
         await redis.setStock(total);
       } catch (error) {
         console.error(error);
+    Sentry.captureException(error);
       }
     };
 
@@ -42,6 +45,7 @@ const main = async () => {
     checkBalance(0);
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -51,6 +55,7 @@ module.exports.init = () => {
       await main();
     } catch (error) {
       console.error(error);
+    Sentry.captureException(error);
     }
   });
 };

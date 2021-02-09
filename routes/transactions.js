@@ -2,6 +2,8 @@
 const router = require("express").Router();
 const Joi = require("@hapi/joi");
 const Discord = require("discord.js");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const uauth = require("../middlewares/uauth");
 const redis = require("../modules/redis");
@@ -87,6 +89,7 @@ router.post("/api/v1/transactions/init", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error! Please try again later!",
@@ -182,6 +185,7 @@ router.post("/api/v1/transactions/complete", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: error.RBX_ERR_CODE
@@ -212,6 +216,7 @@ router.post("/api/v1/transactions/cancel", uauth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error! Please try again!",

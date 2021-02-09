@@ -1,6 +1,8 @@
 //offerwall routes for dynamically loading content
 const router = require("express").Router();
 const _ = require("lodash");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const offerwalls = require("../offerwalls.json");
 const redis = require("../modules/redis");
@@ -36,6 +38,7 @@ router.get("/api/v1/offerwall/:name", async (req, res) => {
     res.status(200).json({ status: "success", result });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error! Please try again!",

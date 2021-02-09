@@ -25,6 +25,7 @@ module.exports.init = () => {
       await main(0);
     } catch (error) {
       console.error(error);
+    Sentry.captureException(error);
     }
   });
 };

@@ -3,6 +3,8 @@ const Joi = require("@hapi/joi");
 const admin = require("firebase-admin");
 const moment = require("moment");
 const Discord = require("discord.js");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const adminAuth = require("../middlewares/adminAuth");
 
@@ -69,6 +71,7 @@ router.get("/api/v1/staff/stats", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -128,6 +131,7 @@ router.post("/api/v1/staff/register", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -159,6 +163,7 @@ router.post(
       });
     } catch (error) {
       console.error(error);
+    Sentry.captureException(error);
       res.status(500).json({
         status: "error",
         error: "Internal error!",
@@ -208,6 +213,7 @@ router.post("/api/v1/reseller/group/add", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(error.RBX_ERR_CODE ? 400 : 500).json({
       status: "error",
       error: error.RBX_ERR_CODE ? error.message : "Internal error!",
@@ -249,6 +255,7 @@ router.post("/api/v1/reseller/group/remove", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -297,6 +304,7 @@ router.post("/api/v1/reseller/payout/request", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -343,6 +351,7 @@ router.post("/api/v1/staff/reseller/reset", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: error.message || "Internal error!",
@@ -386,6 +395,7 @@ router.post("/api/v1/staff/user/ban/toggle", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -429,6 +439,7 @@ router.post("/api/v1/staff/user/info", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",
@@ -479,6 +490,7 @@ router.post("/api/v1/staff/user/balance/set", adminAuth, async (req, res) => {
     }); 
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     res.status(500).json({
       status: "error",
       error: "Internal error!",

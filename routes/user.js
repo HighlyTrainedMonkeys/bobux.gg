@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const Joi = require("@hapi/joi");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const uauth = require("../middlewares/uauth");
 const roblox = require("../modules/roblox");
@@ -56,6 +58,7 @@ router.post("/api/v1/user/link", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     if (error.code || error.code == "INVALID_USERNAME")
       return res.status(400).json({
         status: "error",
