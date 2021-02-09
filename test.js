@@ -1,19 +1,43 @@
-const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
+const needle = require("needle");
 
-Sentry.init({
-  dsn: "https://b527502e32dc4fdc83245f5fdd10a069@o435421.ingest.sentry.io/5626944",
-  tracesSampleRate: 1.0,
-});
+let config = {
+  "name": "ayetstudios",
+  "displayName": "Offerwall #3",
+  "offerwall_id": "2848",
+  "apiKey": "e7d38946b7cac057dfc63c675653f432",
+  "robuxPerDollar": 40,
+  "cache": true
+};
 
-
-
-setTimeout(() => {
+const getAyet = async () => {
   try {
-    foo();
-  } catch (e) {
-    console.error(error);
-    Sentry.captureException(error);
-    Sentry.captureException(error);
+    let result = await needle(
+      "get",
+      `https://www.ayetstudios.com/offers/get/${config.offerwall_id}?apiKey=${config.apiKey}`,
+      { json: true }
+    );
+
+    if (result.statusCode !== 200) throw "Error loading offerwall!";
+
+    let formatted = result.body.offers.map((o) => {
+      return {
+        name: o.name,
+        description: o.conversion_instructions_short,
+        usd: o.payout_usd,
+        id: o.id,
+        url: o.tracking_link,
+        icon: o.icon,
+      };
+    });
+
+    return formatted;
+  } catch (error) {
+    throw error;
   }
-}, 99);
+};
+
+(async () => {
+  let result = await getAyet();
+
+  console.log(result);
+})();

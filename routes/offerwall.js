@@ -50,7 +50,12 @@ router.get("/api/v1/offerwall/:name", auth, async (req, res) => {
       result = offerwall.getOffers(offerwallConfig, req.user.rid, ip);
     }
 
-    res.status(200).json({ status: "success", result });
+    res.status(200).json({
+      status: "success",
+      result: {
+        offers: result,
+      },
+    });
   } catch (error) {
     console.error(error);
     Sentry.captureException(error);
