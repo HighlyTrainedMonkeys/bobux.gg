@@ -18,11 +18,6 @@ const Payout = require("../models/Payout");
 router.post("/api/v1/transactions/init", uauth, async (req, res) => {
   try {
     const { error } = Joi.object({
-      username: Joi.string()
-        .alphanum()
-        .allow(" ", "_")
-        .required()
-        .label("Username"),
       amount: Joi.number().integer().min(1).required().label("Amount"),
     }).validate(req.body);
 
