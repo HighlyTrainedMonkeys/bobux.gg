@@ -32,19 +32,11 @@ module.exports = async (req, res, next) => {
       username: { $regex: new RegExp(req.headers.username, "i") },
     });
 
-    console.log(user)
-
-    if (user.banned) {
-      return res.status(403).json({
-        status: "error",
-        error: "User banned!",
-      });
-    }
 
     if (!user) {
       let rid = await roblox.getIdFromUser(req.headers.username);
       let image = await roblox.getUserThumbnail(rid);
-      
+
       user = new User({
         username: req.headers.username.toLowerCase(),
         rid: rid,
@@ -52,6 +44,14 @@ module.exports = async (req, res, next) => {
       });
 
       await user.save();
+    }
+
+    
+    if (user.banned) {
+      return res.status(403).json({
+        status: "error",
+        error: "User banned!",
+      });
     }
 
     await redis.setCachedUser(user);
