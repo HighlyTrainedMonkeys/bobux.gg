@@ -29,7 +29,7 @@ module.exports.init = () => {
       //TODO: make this configurable
       await redis.setGiveawayInfo({
         amount: 5,
-        lastWinner: info.lastWinner || "No one!",
+        lastWinner: info ? info.lastWinner : "No one!",
       });
       await main();
     } catch (error) {
