@@ -349,11 +349,11 @@ module.exports.getUserThumbnail = async (rid) => {
     if (
       result.statusCode !== 200 ||
       result.body.data.length < 1 ||
-      body.data[0].state !== "Completed"
+      result.body.data[0].state !== "Completed"
     )
       return "https://tr.rbxcdn.com/c3ee609e91804ee2f15c6375355a381a/150/150/AvatarHeadshot/Png";
 
-    return body.data[0].imageUrl;
+    return result.body.data[0].imageUrl;
   } catch (error) {
     throw error;
   }
