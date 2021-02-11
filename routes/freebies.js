@@ -5,6 +5,7 @@ const parser = require("cron-parser");
 const Joi = require("@hapi/joi");
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
+const ms = require("ms");
 
 const ClaimedReward = require("../models/ClaimedReward");
 const Completed = require("../models/Completed");
@@ -47,7 +48,7 @@ router.get("/api/v1/giveaway/meta", uauth, async (req, res) => {
     res.status(200).json({
       status: "success",
       result: {
-        ending: endTime.next().getTime(),
+        ending: ms(Date.now() - endTime.next().getTime()),
         top,
         amount: info.amount,
         lastWinner: info.lastWinner,
