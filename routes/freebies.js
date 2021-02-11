@@ -66,17 +66,17 @@ router.get("/api/v1/giveaway/meta", uauth, async (req, res) => {
 
 router.post("/api/v1/giveaway/enter", uauth, async (req, res) => {
   try {
-    const { error } = Joi.object({
-      token: Joi.string().required().label("Captcha token"),
-    }).validate(req.body);
+    // const { error } = Joi.object({
+    //   token: Joi.string().required().label("Captcha token"),
+    // }).validate(req.body);
 
-    if (error)
-      return res.status(400).json({
-        status: "error",
-        error: "Please solve the captcha!",
-      });
+    // if (error)
+    //   return res.status(400).json({
+    //     status: "error",
+    //     error: "Please solve the captcha!",
+    //   });
 
-    await captcha.verifyCaptcha(req.body.token, req.ipAddress);
+    //await captcha.verifyCaptcha(req.body.token, req.ipAddress);
     await redis.addGiveawayEntry(req.user.rid);
 
     res.status(200).json({
