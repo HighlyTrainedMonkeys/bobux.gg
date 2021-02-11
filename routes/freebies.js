@@ -18,7 +18,7 @@ const captcha = require("../modules/hcaptcha");
 
 router.get("/api/v1/giveaway/meta", uauth, async (req, res) => {
   try {
-    let entries = await redis.getGiveawayEntries();
+    let entries = (await redis.getGiveawayEntries()) || [];
     let info = await redis.getGiveawayInfo();
     let endTime = parser.parseExpression("0 */2 * * *");
 
