@@ -2,15 +2,17 @@ const needle = require("needle");
 const redis = require("./redis");
 const ms = require("ms");
 
-module.exports.getOffers = async (config, uid, ip) => {
+module.exports.getOffers = async (config, uid, ip, ua) => {
   try {
     switch (config.name.toLowerCase()) {
       case "offertoro":
-        return await getOffertoro(config, uid, ip);
+        return await getOffertoro(config, uid, ip, ua);
       case "ayetstudios":
-        return await getAyet(config, uid, ip);
+        return await getAyet(config, uid, ip, ua);
       case "adgate":
-        return await getAdgate(config, uid, ip);
+        return await getAdgate(config, uid, ip, ua);
+        case "cpxresearch":
+        return await getCpx(config, uid, ip, ua);
     }
   } catch (error) {
     throw error;
@@ -20,7 +22,7 @@ module.exports.getOffers = async (config, uid, ip) => {
 //cache results if config says to do so
 const getOffertoro = async (config, uid, ip) => {};
 
-const getAyet = async (config, uid, ip) => {
+const getAyet = async (config, uid, ip, ua) => {
   try {
     let result = await needle(
       "get",
@@ -52,7 +54,7 @@ const getAyet = async (config, uid, ip) => {
   }
 };
 
-const getAdgate = async (config, uid, ip) => {
+const getAdgate = async (config, uid, ip, ua) => {
   try {
     let result = await needle(
       "get",

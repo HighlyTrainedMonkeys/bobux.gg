@@ -19,7 +19,8 @@ router.get("/api/v1/offerwalls", (req, res) => {
 
 router.get("/api/v1/offerwall/:name", auth, async (req, res) => {
   let ip = req.headers["cf-connecting-ip"] || req.ip;
-
+  let ua = req.headers['user-agent'];
+  
   let { error } = Joi.string().ip().required().validate(ip);
 
   if (error)
@@ -45,12 +46,12 @@ router.get("/api/v1/offerwall/:name", auth, async (req, res) => {
       let cached = await redis.getOfferwallCache(offerwallConfig.name);
 
       if (!cached || !cached.expiry || cached.expiry < Date.now()) {
-        result = await offerwall.getOffers(offerwallConfig, req.user.rid, ip);
+        result = await offerwall.getOffers(offerwallConfig, req.user.rid, ip, ua);
       } else {
         result = cached.offers;
       }
     } else {
-      result = await offerwall.getOffers(offerwallConfig, req.user.rid, ip);
+      result = await offerwall.getOffers(offerwallConfig, req.user.rid, ip, ua);
     }
 
     res.status(200).json({
