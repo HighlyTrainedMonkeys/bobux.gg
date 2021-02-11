@@ -102,7 +102,7 @@ const getCpx = async (config, uid, ip, ua) => {
 
     if (result.statusCode !== 200) throw "Error loading offerwall!";
 
-    console.log(result.body)
+    console.log(result.body.surveys)
     let formatted = result.body.surveys.map((o) => {
       return {
         name: "CPX Research Task",
