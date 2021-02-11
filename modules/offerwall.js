@@ -11,7 +11,7 @@ module.exports.getOffers = async (config, uid, ip, ua) => {
         return await getAyet(config, uid, ip, ua);
       case "adgate":
         return await getAdgate(config, uid, ip, ua);
-        case "cpxresearch":
+      case "cpxresearch":
         return await getCpx(config, uid, ip, ua);
     }
   } catch (error) {
@@ -44,8 +44,11 @@ const getAyet = async (config, uid, ip, ua) => {
       };
     });
 
-    if(config.cache) {
-      await redis.setOfferwallCache(config.name, {expiry: Date.now() + ms("15m"), offers: formatted});
+    if (config.cache) {
+      await redis.setOfferwallCache(config.name, {
+        expiry: Date.now() + ms("15m"),
+        offers: formatted,
+      });
     }
 
     return formatted;
@@ -76,8 +79,11 @@ const getAdgate = async (config, uid, ip, ua) => {
       };
     });
 
-    if(config.cache) {
-      await redis.setOfferwallCache(config.name, {expiry: Date.now() + ms("15m"), offers: formatted});
+    if (config.cache) {
+      await redis.setOfferwallCache(config.name, {
+        expiry: Date.now() + ms("15m"),
+        offers: formatted,
+      });
     }
 
     return formatted;
@@ -96,20 +102,26 @@ const getCpx = async (config, uid, ip, ua) => {
 
     if (result.statusCode !== 200) throw "Error loading offerwall!";
 
+    console.log(result.body)
     let formatted = result.body.surveys.map((o) => {
       return {
         name: "CPX Research Task",
         description: "Take a survey and earn",
         //usd: o.points,
-        reward: Math.ceil(o.payout_publisher_usd * process.env.ROBUX_PER_DOLLAR),
+        reward: Math.ceil(
+          o.payout_publisher_usd * process.env.ROBUX_PER_DOLLAR
+        ),
         id: o.id,
         url: o.href,
         icon: "https://i.imgur.com/5shjgYF.png",
       };
     });
 
-    if(config.cache) {
-      await redis.setOfferwallCache(config.name, {expiry: Date.now() + ms("15m"), offers: formatted});
+    if (config.cache) {
+      await redis.setOfferwallCache(config.name, {
+        expiry: Date.now() + ms("15m"),
+        offers: formatted,
+      });
     }
 
     return formatted;
