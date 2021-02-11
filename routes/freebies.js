@@ -47,7 +47,7 @@ router.get("/api/v1/giveaway/meta", uauth, async (req, res) => {
     res.status(200).json({
       status: "success",
       result: {
-        ending: endTime.next(),
+        ending: endTime.next().getTime(),
         top,
         amount: info.amount,
         lastWinner: info.lastWinner,
