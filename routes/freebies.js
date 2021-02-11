@@ -23,6 +23,7 @@ router.get("/api/v1/giveaway/meta", uauth, async (req, res) => {
     let info = await redis.getGiveawayInfo();
     let endTime = parser.parseExpression("0 */2 * * *");
 
+    console.log(entries)
     //TODO: verify this works!
     let summed = entries.reduce((p, c) => {
       let user = p.find((u) => u.uid == c);
