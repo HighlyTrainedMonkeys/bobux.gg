@@ -6,7 +6,15 @@ const redis = require("../modules/redis");
 const User = require("../models/User");
 
 const main = async () => {
-  let entries = await redis.getGiveawayEntries();
+  let entries = (await redis.getGiveawayEntries()) || [];
+  
+  if (entries.length == 0) {
+    return await redis.setGiveawayInfo({
+      amount: 5,
+      lastWinner: "No one!",
+    });
+  }
+  
   let info = await redis.getGiveawayInfo();
   let wid = entries[Math.floor(Math.random() * entries.length)]; //winner id
 
@@ -34,7 +42,7 @@ module.exports.init = () => {
       await main();
     } catch (error) {
       console.error(error);
-    Sentry.captureException(error);
+      Sentry.captureException(error);
     }
   });
 };
