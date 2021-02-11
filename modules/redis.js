@@ -111,7 +111,7 @@ module.exports.getGiveawayEntries = async () => {
 
 module.exports.addGiveawayEntry = async (rid) => {
   try {
-    let entries = await this.getGiveawayEntries();
+    let entries = (await this.getGiveawayEntries()) || [];
     entries.push(rid);
     await connection.set("giveaway-entries", JSON.stringify(entries));
   } catch (error) {
