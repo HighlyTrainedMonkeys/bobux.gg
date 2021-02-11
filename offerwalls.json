@@ -11,7 +11,7 @@
     "displayName": "Offerwall #2",
     "offerwall_id": "n6qUsA",
     "robuxPerDollar": 40,
-    "cache": true
+    "cache": false
   },
   {
     "name": "ayetstudios",
@@ -20,5 +20,13 @@
     "apiKey": "e7d38946b7cac057dfc63c675653f432",
     "robuxPerDollar": 40,
     "cache": true
+  },
+  {
+    "name": "cpxresearch",
+    "displayName": "Offerwall #4",
+    "app_id": "6884",
+    "secure_hash": "DHuaVhvw29Z7rlzfebIU71G8R2vo1M3H",
+    "robuxPerDollar": 40,
+    "cache": false
   }
 ]

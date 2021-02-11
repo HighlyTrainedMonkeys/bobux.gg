@@ -83,3 +83,35 @@ const getAdgate = async (config, uid, ip) => {
     throw error;
   }
 };
+
+const getCpx = async (config, uid, ip, ua) => {
+  try {
+    let result = await needle(
+      "get",
+      `https://live-api.cpx-research.com/api/get-surveys.php?app_id=${config.app_id}&ext_user_id=${uid}&subid_1=&subid_2=&output_method=api&ip_user=${ip}&user_agent=${ua}&limit=30&secure_hash=${config.secure_hash}`,
+      { json: true }
+    );
+
+    if (result.statusCode !== 200) throw "Error loading offerwall!";
+
+    let formatted = result.body.surveys.map((o) => {
+      return {
+        name: "CPX Research Task",
+        description: "Take a survey and earn",
+        //usd: o.points,
+        reward: Math.ceil(o.payout_publisher_usd * process.env.ROBUX_PER_DOLLAR),
+        id: o.id,
+        url: o.href,
+        icon: "https://i.imgur.com/5shjgYF.png",
+      };
+    });
+
+    if(config.cache) {
+      await redis.setOfferwallCache(config.name, {expiry: Date.now() + ms("15m"), offers: formatted});
+    }
+
+    return formatted;
+  } catch (error) {
+    throw error;
+  }
+};
